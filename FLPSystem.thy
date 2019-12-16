@@ -1,17 +1,17 @@
-section{* FLPSystem *}
+section\<open>FLPSystem\<close>
 
-text {*
+text \<open>
   \file{FLPSystem} extends \file{AsynchronousSystem} with concepts of consensus
   and decisions. It develops a concept of non-uniformity regarding pending
   decision possibilities, where non-uniform configurations can always
   reach other non-uniform ones.
-*}
+\<close>
 
 theory FLPSystem
-imports AsynchronousSystem ListUtilities
+imports AsynchronousSystem
 begin
 
-subsection{* Locale for the FLP consensus setting *}
+subsection\<open>Locale for the FLP consensus setting\<close>
 
 locale flpSystem =
   asynchronousSystem trans sends start    
@@ -23,7 +23,7 @@ assumes minimalProcs: "card Proc \<ge> 2"
     and noInSends: " <p2, inM v> \<notin># sends p s m"
 begin
 
-subsection{* Decidedness and uniformity of configurations*}
+subsection\<open>Decidedness and uniformity of configurations\<close>
 
 abbreviation vDecided ::
   "bool \<Rightarrow> ('p, 'v, 's) configuration \<Rightarrow> bool"
@@ -59,13 +59,13 @@ where
     \<not>(vUniform False c) \<and> 
     \<not>(vUniform True c)"
 
-subsection{* Agreement, validity, termination *}
+subsection\<open>Agreement, validity, termination\<close>
 
-text{*
+text\<open>
   Völzer defines consensus in terms of the classical notions
   of agreement, validity, and termination. The proof then mostly applies a
   weakened notion of termination, which we refer to as ,,pseudo termination''.
-*}
+\<close>
 
 definition agreement ::
   "('p, 'v, 's) configuration \<Rightarrow> bool"
@@ -92,19 +92,19 @@ where
       (\<forall>v. (<\<bottom>, outM v> \<in># msgs c) 
         \<longrightarrow> (\<exists>p. (<p, inM v> \<in># msgs i)))"
 
-text{*
+text\<open>
   The termination concept which is implied by the concept of "pseudo-consensus"
   in the paper.
-*}
+\<close>
 definition terminationPseudo ::
   "nat \<Rightarrow> ('p, 'v, 's) configuration \<Rightarrow> 'p set \<Rightarrow> bool"
 where
   "terminationPseudo t c Q \<equiv> ((initReachable c \<and> card Q + t \<ge> card Proc) 
     \<longrightarrow> (\<exists>c'. qReachable c Q c' \<and> decided c'))"
 
-subsection {* Propositions about decisions *}
+subsection \<open>Propositions about decisions\<close>
 
-text{*
+text\<open>
   For every process \var{p} and every configuration that is reachable from an
   initial configuration (i.e. \isb{initReachable} \var{c}) we have
   $\var{val(p,c)} \neq \emptyset$.
@@ -114,7 +114,7 @@ text{*
   reachable configuration that is decided.
   
   \voelzer{Proposition 2(a)}
-*}
+\<close>
 lemma DecisionValuesExist:
 assumes
   Termination: "\<And>cc Q . terminationPseudo 1 cc Q" and
@@ -132,7 +132,7 @@ proof -
   thus ?thesis  using Reachable by (auto simp add:pSilDecVal_def)
 qed
 
-text{*
+text\<open>
   The lemma \isb{DecidedImpliesUniform} proves that every \isb{vDecided}
   configuration \var{c} is also \isb{vUniform}. Völzer claims that this
   follows directly from the definitions of \isb{vDecided} and \isb{vUniform}.
@@ -140,7 +140,7 @@ text{*
   and \isb{agreement} for all reachable configurations.
 
   \voelzer{Proposition 2(b)}
-*}
+\<close>
 lemma DecidedImpliesUniform:
 assumes
   Reachable:"initReachable c" and
@@ -194,13 +194,13 @@ assumes
 shows
   "False" by (metis (full_types) assms flpSystem.DecidedImpliesUniform flpSystem_axioms)
       
-text{*
+text\<open>
   All three parts of Völzer's Proposition 3 consider a single step from an
   arbitrary \isb{initReachable} configuration \var{c} with a message
   $\var{msg}$ to a succeeding configuration \var{c'}.
-*}
+\<close>
 
-text{*
+text\<open>
   The silent decision values of a process which is not active in a step only
   decrease or stay the same.
   
@@ -208,7 +208,7 @@ text{*
   reachability properties \isb{reachable} and \isb{qReachable}.
 
   \voelzer{Proposition 3(a)}
-*}
+\<close>
 lemma InactiveProcessSilentDecisionValuesDecrease:
 assumes 
   "p \<noteq> q" and
@@ -239,7 +239,7 @@ proof(auto simp add: pSilDecVal_def assms(4))
     "\<exists>c'a. qReachable c (Proc - {q}) c'a \<and>  <\<bottom>, outM x> \<in># msgs c'a" by blast
 qed
 
-text{*
+text\<open>
   ...while the silent decision values of the process which is active in
   a step may only increase or stay the same.
   
@@ -249,7 +249,7 @@ text{*
   \isb{NoOutMessageLoss}.
 
   \voelzer{Proposition 3(b)}
-*}
+\<close>
 lemma ActiveProcessSilentDecisionValuesIncrease:
 assumes 
   "p = q" and
@@ -274,7 +274,7 @@ proof (auto simp add: pSilDecVal_def assms(4))
     using C''(2) Init by blast
 qed
 
-text{*
+text\<open>
   As a result from the previous two propositions, the silent decision values
   of a process cannot go from {0} to {1} or vice versa in a step.
 
@@ -283,7 +283,7 @@ text{*
   interested in the situation starting with $\var{val(q,c) = \{0\}}$.
 
   \voelzer{Proposition 3(c)}
-*}
+\<close>
 lemma SilentDecisionValueNotInverting:
 assumes 
   Val: "val[q,c] = {v}" and
@@ -304,7 +304,7 @@ proof(cases "p = q")
     with Val show "val[q,c'] \<noteq> {\<not> v}" by auto
 qed
 
-subsection{* Towards a proof of FLP *}
+subsection\<open>Towards a proof of FLP\<close>
 
 lemma inM_all_eq_imp_uniform:
   fixes i w
@@ -380,7 +380,7 @@ next
   from f1 f2 f3 f4 show ?case by blast
 qed
 
-text{*
+text\<open>
   There is an \isb{initial} configuration that is \isb{nonUniform} under
   the assumption of \isb{validity}, \isb{agreement} and \isb{terminationPseudo}.
 
@@ -389,7 +389,7 @@ text{*
   final contradiction.
 
   \voelzer{Lemma 1}
-*}
+\<close>
 lemma InitialNonUniformCfg:
 assumes
   Termination: "\<And>cc Q . terminationPseudo 1 cc Q" and
@@ -399,11 +399,11 @@ shows
   "\<exists> cfg . initial cfg \<and> nonUniform cfg" 
 proof-
   define n where "n \<equiv> card Proc"
-  text {* We order the processes using a bijection to @{term "{0..<n}"}. *}
+  text \<open>We order the processes using a bijection to @{term "{0..<n}"}.\<close>
   obtain f where f_bij:"bij_betw f Proc {0..<n}"
     using ex_bij_betw_finite_nat n_def finite_UNIV by blast
   
-  text {* We define a family of configurations as in \voelzer{Lemma 1}. *}
+  text \<open>We define a family of configurations as in \voelzer{Lemma 1}.\<close>
   define initMsgs :: "nat \<Rightarrow> (('p, 'v) message) multiset"
     where "initMsgs \<equiv>  (\<lambda> i . mset_set {m . \<exists> p . m = <p, inM (f p < i)>})"
   define initCfg :: "nat \<Rightarrow> ('p, 'v, 's) configuration" where
@@ -422,13 +422,13 @@ proof-
   hence in_initMsgs[iff]:"m \<in># initMsgs i \<longleftrightarrow> (\<exists> p . m = <p, inM f p < i>)" for m i
     by (metis count_eq_zero_iff zero_neq_one)
     
-  text {* All the configurations in the family are initial. *}
+  text \<open>All the configurations in the family are initial.\<close>
   have InitInitial: "initial c" if 1:"c \<in> initCfg ` {0..m}" for c m 
     using that unfolding initial_def initCfg_def
     by (cases c, auto simp add: split:if_splits message.splits)
   
-  text {* Now we obtain an index j where the configuration j is uniform, 
-    but not the configuration @{term "j+1"} *}
+  text \<open>Now we obtain an index j where the configuration j is uniform, 
+    but not the configuration @{term "j+1"}\<close>
   define P::"nat \<Rightarrow> bool" where "P \<equiv> \<lambda> i . vUniform False (initCfg i)"
   obtain j where "j\<in>{0..<(n+1)}" and "P j" and "\<not> (P (j+1))"
   proof -
@@ -455,13 +455,13 @@ proof-
     from \<open>P 0\<close> and \<open>\<not> (P (n+1))\<close> show ?thesis using that NatPredicateTippingPoint by moura
   qed
   
-  text {* Now we show that the configuration @{term "j+1"} is non-uniform. *}
+  text \<open>Now we show that the configuration @{term "j+1"} is non-uniform.\<close>
   consider (a) "vUniform True (initCfg (j+1))" | (b) "nonUniform (initCfg (j+1))" 
     using \<open>\<not> (P (j+1))\<close> P_def by blast
   thus ?thesis
   proof (cases)
     case a
-    text {* We obtain an execution where False is decided, leading to a contradiction. *}
+    text \<open>We obtain an execution where False is decided, leading to a contradiction.\<close>
     define pj where "pj \<equiv> (inv f) j"
     obtain c where "qReachable (initCfg (j+1)) (Proc-{pj}) c" and "vDecided False c"
     proof -
@@ -497,14 +497,14 @@ lemma bool_set_cases:
   by (cases "bs = {}"; cases "bs = {True}"; cases "bs = {False}"; cases "bs = {True,False}")
     (auto, (metis (full_types))+)
 
-text{*  
+text\<open>
   Völzer's Lemma 2 proves that for every process $p$ in the consensus setting 
   \isb{nonUniform} configurations can reach a configuration where the silent
   decision values of $p$ are True and False. This is key to the construction of
   non-deciding executions.
 
   \voelzer{Lemma 2}
-*}
+\<close>
 lemma NonUniformCanReachSilentBivalence:
 assumes 
   Init: "initReachable c" and
@@ -520,8 +520,8 @@ proof(cases "val[p,c] = {True, False}")
 next 
   case False
   
-  text {* Since the configuration is non-uniform, we obtain p with @{term "val[p,c] = {b}"}
-    and q with @{term "(\<not>b) \<in> val[q,c]"}*}
+  text \<open>Since the configuration is non-uniform, we obtain p with @{term "val[p,c] = {b}"}
+    and q with @{term "(\<not>b) \<in> val[q,c]"}\<close>
   have 2:"val[q,c] \<noteq> {}" for q
     using DecisionValuesExist Init PseudoTermination by blast
   obtain b where  "val[p,c] = {b}" using 2 False
@@ -536,15 +536,15 @@ next
       using that by (cases "val[p2,c]" rule:bool_set_cases; auto)
   qed
   
-  text {* Then we reach a configuration @{term cNotB} in which @{term "val[p,cNotB]={\<not>b}"} by letting
-    the system run without q and reach a @{term "\<not>b"} decision. *}
+  text \<open>Then we reach a configuration @{term cNotB} in which @{term "val[p,cNotB]={\<not>b}"} by letting
+    the system run without q and reach a @{term "\<not>b"} decision.\<close>
   obtain cNotB where "vDecided (\<not> b) cNotB" and "withoutQReachable c {q} cNotB"
     using \<open>(\<not> b) \<in> val[q,c]\<close> pSilDecVal_def by auto
   hence "val[p,cNotB] = {\<not> b}"
     by (meson Agree DecidedImpliesUniform Init PseudoTermination ReachableTrans asynchronousSystem.QReachImplReach initReachable_def vUniform_def)
   
-  text {* We obtain two configuration @{term "cB"} and @{term cNotB'}, on the way to @{term "cNotB"} 
-    where the set of silent decision values of p changes to include @{term "\<not>b"} or is @{term "{True,False}"} already. *}
+  text \<open>We obtain two configuration @{term "cB"} and @{term cNotB'}, on the way to @{term "cNotB"} 
+    where the set of silent decision values of p changes to include @{term "\<not>b"} or is @{term "{True,False}"} already.\<close>
   obtain cB cNotB' m q' where "val[p,cB] = {b} \<or> val[p,cB] = {True,False}" and "(\<not>b) \<in> val[p,cNotB']" and
     "cB \<turnstile> m \<mapsto> cNotB'" and "isReceiverOf q' m" and "withoutQReachable c {q} cB"
     using \<open>withoutQReachable c {q} cNotB\<close> \<open>val[p,cNotB] = {\<not> b}\<close> \<open>val[p,c] = {b}\<close> \<open>initReachable c\<close>
@@ -556,7 +556,7 @@ next
     then show ?case
     proof (cases "val[p,c2] = {\<not> b}")
       case True
-      text {* Immediate by induction hypothesis. *}
+      text \<open>Immediate by induction hypothesis.\<close>
       then show ?thesis
         using StepQ.hyps(2) StepQ.prems(1) StepQ.prems(3) StepQ.prems(4) by blast
     next
@@ -570,15 +570,15 @@ next
     qed
   qed
   
-  text {* Trivial facts *}
+  text \<open>Trivial facts\<close>
   have "initReachable cB" 
     using \<open>withoutQReachable c {q} cB\<close> \<open>initReachable c\<close>  QReachImplReach ReachableTrans initReachable_def
     by blast
   have "reachable c cNotB'" using \<open>cB \<turnstile> m \<mapsto> cNotB'\<close> \<open>withoutQReachable c {q} cB\<close>
     using QReachImplReach reachable.step by blast
   
-  text {* Now either  @{term "val[p,cB] = {True,False}"} or, using @{thm SilentDecisionValueNotInverting}, 
-    @{term "val[p,cNotB'] = {True,False}"}*}
+  text \<open>Now either  @{term "val[p,cB] = {True,False}"} or, using @{thm SilentDecisionValueNotInverting}, 
+    @{term "val[p,cNotB'] = {True,False}"}\<close>
   consider "val[p,cB] = {True,False}" | "val[p,cNotB'] = {True,False}"
   proof -
     have "val[p,cNotB'] = {True,False}" if "val[p,cB] \<noteq> {True,False}"
@@ -595,7 +595,7 @@ next
     thus ?thesis using that by blast 
   qed
   
-  text {* And in both cases we have found our @{term c'} *}
+  text \<open>And in both cases we have found our @{term c'}\<close>
   hence "\<exists> c' . reachable c c' \<and> val[p,c'] = {True, False}"
     using \<open>reachable c cNotB'\<close> \<open>withoutQReachable c {q} cB\<close> by (meson QReachImplReach) 
   with False 2 show ?thesis by auto
