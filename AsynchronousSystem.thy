@@ -7,7 +7,7 @@ text \<open>
 \<close>
 
 theory AsynchronousSystem
-imports "~~/src/HOL/Library/Multiset"
+imports "HOL-Library.Multiset"
 begin
 
 text\<open>

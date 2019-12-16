@@ -8,7 +8,7 @@ text \<open>
 \<close>
 
 theory FLPSystem
-imports AsynchronousSystem
+imports AsynchronousSystem ListUtilities
 begin
 
 subsection\<open>Locale for the FLP consensus setting\<close>
